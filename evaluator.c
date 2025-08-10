@@ -46,7 +46,36 @@ int main(){
         puts(infix[k]);
     }
     /////////////////////////////////
+    
+    // infix to postfix conversion
 
+    char prefix[50][50];
+    char stack[50][50];
+    for(int k = 0; k < i; k++){
+        if(!isnum(*infix[k])){
+            switch(*infix[k]){
+                case '(':
+                    
+                    break;
+                case ')':
+                    
+                    break;
+                case '+':
+                case '-':
+                    
+                    break;
+                case '*':
+                case '/':
+                    
+                    break;
+                case '^':
+                    
+                    break;
+                default:
+
+            }
+        }
+    }
     
 
 
