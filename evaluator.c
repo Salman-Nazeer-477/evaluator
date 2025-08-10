@@ -3,12 +3,25 @@
 #include<ctype.h>
 const char* expression = "(20 + 40)*2";
 char infix[50][50];
+
+int isnum(char c){
+    if(isalnum(c) && !isalpha(c)) return 1;
+    return 0;
+}
+
+int isopepar(char c){
+    return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
 int main(){
     // Tokenize expression
     int i = 0, j = 0;
     int len = strlen(expression);
     for(int k = 0; k < len; k++){
         if(expression[k] == ' ') continue;
+        if(!isnum(expression[k]) && !isopepar(expression[k])){
+            printf("Invalid expression!\n");
+            return 1;
+        }
         if(!isdigit(expression[k])){
             infix[i][j] = expression[k];
             infix[i][j + 1] = '\0';
@@ -35,5 +48,6 @@ int main(){
     /////////////////////////////////
 
     
+
 
 }
