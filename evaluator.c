@@ -12,6 +12,16 @@ int isnum(char c){
 int isopepar(char c){
     return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
 }
+
+int toint(char num[]){
+    int n = 0;
+    int len = strlen(num);
+    for(int i = 0; num[i] != '\0' || (len - 1 - i) > 0; i++){
+        n += (num[len - 1 - i] - '0') * pow(10, i);
+    }
+    return n;
+}
+
 int main(){
     // Tokenize expression
     int i = 0, j = 0;
@@ -76,7 +86,38 @@ int main(){
             }
         }
     }
-    
+
+    // Postfix evaluation
+
+    char *postfix[50] = {"23", "8", "-", "3", "*",};
+	int num_stack[50];
+	int n = 0;
+	for(int o = 0; o < 5; o++){
+	    if(isdigit(*postfix[o])){
+	        num_stack[n] = toint(postfix[o]);
+	        n++;
+	    }
+	    else{
+	        int a = num_stack[n - 1]; n--;
+	        int b = num_stack[n - 1]; n--;
+	        switch(*postfix[o]){
+	            case '*':
+	                num_stack[n] = b * a;
+	                break;
+	            case '/':
+	                num_stack[n] = b / a;
+	                break;
+	            case '+':
+	                num_stack[n] = b + a;
+	                break;
+	            case '-':
+	                num_stack[n] = b - a;
+	                break;
+	        }
+	        n++;
+	    }   
+	}
+	printf("%d\n", num_stack[0]);
 
 
 }
