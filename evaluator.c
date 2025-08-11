@@ -52,44 +52,63 @@ int main(){
         }
     }
 
-    for(int k = 0; k < i; k++){
-        puts(infix[k]);
-    }
+    // for(int k = 0; k < i; k++){
+    //     puts(infix[k]);
+    // }
     /////////////////////////////////
     
     // infix to postfix conversion
 
-    char prefix[50][50];
+    char postfix[50][50];
     char stack[50][50];
-    for(int k = 0; k < i; k++){
-        if(!isnum(*infix[k])){
+    int l = 0; int m = 0;
+    for(int k = 0; k < 7; k++){
+        if(isdigit(infix[k])){
+            strcpy( postfix[l], infix[k]);
+            l++;
+        }
+        else{
             switch(*infix[k]){
                 case '(':
-                    
+                    strcpy(stack[m], infix[k]);
+                    m++;
                     break;
                 case ')':
-                    
+                    while(*stack[m] != '('){
+                        strcpy(postfix[l], stack[m]);
+                    puts(stack[m-1]); //
+
+                        l++; m--;
+                    }
+                    if(*stack[m] == '('){
+                        l++;
+                    }
                     break;
                 case '+':
                 case '-':
-                    
+                    while(m > 0 && *stack[m - 1] != '('){
+                         strcpy(postfix[l], stack[m]);
+                         l++; m--;
+                    }
                     break;
                 case '*':
                 case '/':
-                    
+                    while(m > 0 && *stack[m - 1] != '(' && *stack[m - 1] != '+' && *stack[ m - 1] != '-'){
+                        strcpy(postfix[l], stack[m]);
+                        l++; m--;
+                    }
                     break;
-                case '^':
-                    
-                    break;
-                default:
-
             }
         }
+        
+    }
+    while(m > -1){
+        strcpy(postfix[l], stack[m]);
+        l++; m--;
     }
 
     // Postfix evaluation
 
-    char *postfix[50] = {"23", "8", "-", "3", "*",};
 	int num_stack[50];
 	int n = 0;
 	for(int o = 0; o < 5; o++){
