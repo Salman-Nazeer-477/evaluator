@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 const char *expression = "(20 + 40)*2";
 char infix[50][50];
 
@@ -16,15 +17,24 @@ int isopepar(char c)
     return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
 }
 
-int toint(char num[])
-{
-    int n = 0;
-    int len = strlen(num);
-    for (int i = 0; num[i] != '\0' || (len - 1 - i) > 0; i++)
-    {
-        n += (num[len - 1 - i] - '0') * pow(10, i);
+double tonum(char *str){
+    int sign = 1; int i = 0;
+    double num = 0.0;
+    if(str[0] == '-'){
+        sign = -1;
+        i = 1;
     }
-    return n;
+    int j = 0;
+    for(; j < strlen(str); j++){
+        if(str[j] == '.') break;
+    }
+    for(int k = j -1; k >= i; k--){
+        num += (str[k] - '0') * pow(10, j - k - 1);
+    }
+    for(int k = j + 1; k < strlen(str); k++){
+        num += (str[k] - '0') * pow(10, j - k);
+    }
+    return num * sign;
 }
 
 int main()
@@ -139,20 +149,20 @@ int main()
 
     // Postfix evaluation
 
-    int num_stack[50];
+    double num_stack[50];
     int n = 0;
     for (int o = 0; o < 5; o++)
     {
         if (isdigit(*postfix[o]))
         {
-            num_stack[n] = toint(postfix[o]);
+            num_stack[n] = tonum(postfix[o]);
             n++;
         }
         else
         {
-            int a = num_stack[n - 1];
+            double a = num_stack[n - 1];
             n--;
-            int b = num_stack[n - 1];
+            double b = num_stack[n - 1];
             n--;
             switch (*postfix[o])
             {
@@ -168,6 +178,8 @@ int main()
             case '-':
                 num_stack[n] = b - a;
                 break;
+            case '^':
+                num_stack[n] = pow(b, a);
             }
             n++;
         }
