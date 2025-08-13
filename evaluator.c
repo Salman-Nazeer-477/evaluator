@@ -17,21 +17,28 @@ int isopepar(char c)
     return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
 }
 
-double tonum(char *str){
-    int sign = 1; int i = 0;
+double tonum(char *str)
+{
+    int sign = 1;
+    int i = 0;
     double num = 0.0;
-    if(str[0] == '-'){
+    if (str[0] == '-')
+    {
         sign = -1;
         i = 1;
     }
     int j = 0;
-    for(; j < strlen(str); j++){
-        if(str[j] == '.') break;
+    for (; j < strlen(str); j++)
+    {
+        if (str[j] == '.')
+            break;
     }
-    for(int k = j -1; k >= i; k--){
+    for (int k = j - 1; k >= i; k--)
+    {
         num += (str[k] - '0') * pow(10, j - k - 1);
     }
-    for(int k = j + 1; k < strlen(str); k++){
+    for (int k = j + 1; k < strlen(str); k++)
+    {
         num += (str[k] - '0') * pow(10, j - k);
     }
     return num * sign;
@@ -126,8 +133,8 @@ int main()
                     l++;
                     m--;
                 }
-                if()
-                break;
+                if ()
+                    break;
             case '*':
             case '/': // problems lie here
                 while (m > 0 && *stack[m - 1] != '(' && *stack[m - 1] != '+' && *stack[m - 1] != '-')
