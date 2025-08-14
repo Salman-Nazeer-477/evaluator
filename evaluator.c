@@ -119,30 +119,38 @@ int main()
                     l++;
                     m--;
                 }
-                if (*stack[m] == '(')
+                if (*stack[m - 1] == '(')
                 {
-                    l++;
                     m--;
                 }
                 break;
+            case '^':
+            	strcpy(postfix[l], stack[m - 1]);
+            	l++;
+            	m--;
+            	break;
             case '+':
             case '-': // problems lie here
-                while (m > 0 && *stack[m - 1] != '(')
-                {
-                    strcpy(postfix[l], stack[m]);
+            	if(*stack[m - 1] != '('){
+            	    strcpy(postfix[l], stack[m - 1]);
                     l++;
                     m--;
-                }
-                if ()
-                    break;
+            	    strcpy(stack[m], infix[k]);
+            	}
+                break;
             case '*':
-            case '/': // problems lie here
-                while (m > 0 && *stack[m - 1] != '(' && *stack[m - 1] != '+' && *stack[m - 1] != '-')
-                {
-                    strcpy(postfix[l], stack[m]);
-                    l++;
-                    m--;
-                }
+            case '/':
+            	if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
+            		strcpy(stack[m], infix[k]);
+            		l++;
+            		m--;
+            	}
+            	else if(*stack[m - 1] == '+' || *stack[m - 1] == '-'){
+            		strcpy(postfix[l], stack[m - 1]);
+            		l++;
+            		m--;
+            		strcpy(stack[m], infix[k]);
+            	}               
                 break;
             }
         }
