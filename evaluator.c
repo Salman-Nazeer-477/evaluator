@@ -99,7 +99,7 @@ int main()
     int m = 0;
     for (int k = 0; k < 7; k++)
     {
-        if (isdigit(infix[k]))
+        if (isdigit(*infix[k]))
         {
             strcpy(postfix[l], infix[k]);
             l++;
@@ -140,7 +140,7 @@ int main()
                 break;
             case '*':
             case '/':
-            	if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
+            	if(stack[m - 1] == '^' || *stack[m - 1] == '' || *stack[m - 1] == '/'){
             		strcpy(stack[m], infix[k]);
             		l++;
             		m--;
