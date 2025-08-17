@@ -140,7 +140,7 @@ int main()
                 break;
             case '*':
             case '/':
-            	if(stack[m - 1] == '^' || *stack[m - 1] == '' || *stack[m - 1] == '/'){
+            	if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
             		strcpy(stack[m], infix[k]);
             		l++;
             		m--;
