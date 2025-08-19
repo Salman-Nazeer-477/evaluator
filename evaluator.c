@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-const char *expression = "(20 + 40)*2";
+const char *expression = "(0 + 0)*0";
 char infix[50][50];
 
 int isnum(char c)
@@ -15,6 +15,11 @@ int isnum(char c)
 int isopepar(char c)
 {
     return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+int isoperator(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
 }
 
 double tonum(char *str)
@@ -125,33 +130,38 @@ int main()
                 }
                 break;
             case '^':
-            	strcpy(postfix[l], stack[m - 1]);
-            	l++;
-            	m--;
+            	strcpy(stack[m], infix[k]);
+            	m++;
             	break;
-            case '+':
-            case '-': // problems lie here
-            	if(*stack[m - 1] != '('){
-            	    strcpy(postfix[l], stack[m - 1]);
-                    l++;
-                    m--;
-            	    strcpy(stack[m], infix[k]);
-            	}
-                break;
             case '*':
             case '/':
-            	if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
-            		strcpy(stack[m], infix[k]);
-            		l++;
-            		m--;
-            	}
-            	else if(*stack[m - 1] == '+' || *stack[m - 1] == '-'){
-            		strcpy(postfix[l], stack[m - 1]);
-            		l++;
-            		m--;
-            		strcpy(stack[m], infix[k]);
-            	}               
+                if(*stack[m - 1] == '+' || *stack[m - 1] == '-'){
+                    strcpy(stack[m], infix[k]);
+                }
+                else if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
+                    strcpy(postfix[l], stack[m - 1]);
+                    l++;
+                    m--;
+                    strcpy(stack[m], infix[k]);
+                    m++;
+                }
+                else if(m == 0){
+                    strcpy(stack[m], infix[k]);
+                    m++;
+                }
                 break;
+            case '+':
+            case '-':
+                if(isoperator(*stack[m - 1])){
+                    strcpy(postfix[l], stack[m - 1]);
+                    l++; m--;
+                    strcpy(stack[m], infix[k]);
+                    m++;
+                }
+                else if(m == 0){
+                    strcpy(stack[m], infix[k]);
+                    m++;
+                }
             }
         }
     }
@@ -166,7 +176,7 @@ int main()
 
     double num_stack[50];
     int n = 0;
-    for (int o = 0; o < 5; o++)
+    for (int o = 0; o < l; o++)
     {
         if (isdigit(*postfix[o]))
         {
