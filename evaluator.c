@@ -209,5 +209,5 @@ int main()
             n++;
         }
     }
-    printf("%d\n", num_stack[0]);
+    printf("%lf\n", num_stack[0]);
 }
