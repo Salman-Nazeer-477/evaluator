@@ -17,7 +17,7 @@ int isoperator(char c);
 int main()
 {
     // Tokenize expression
-    int l_infix = 0, l_token = 0;
+    int i_infix = 0, i_token = 0;
     int l_expression = strlen(expression);
     for (int i_expression = 0; i_expression < l_expression; i_expression++)
     {
@@ -30,32 +30,32 @@ int main()
         }
         if (!isdigit(expression[i_expression]))
         {
-            infix[l_infix][l_token] = expression[i_expression];
-            infix[l_infix][l_token + 1] = '\0';
-            l_infix++;
-            l_token = 0;
+            infix[i_infix][i_token] = expression[i_expression];
+            infix[i_infix][i_token + 1] = '\0';
+            i_infix++;
+            i_token = 0;
         }
         else
         {
             if (isdigit(expression[i_expression - 1]))
             {
-                l_infix--;
-                l_token++;
-                infix[l_infix][l_token] = expression[i_expression];
-                infix[l_infix][l_token + 1] = '\0';
-                l_infix++;
-                l_token = 0;
+                i_infix--;
+                i_token++;
+                infix[i_infix][i_token] = expression[i_expression];
+                infix[i_infix][i_token + 1] = '\0';
+                i_infix++;
+                i_token = 0;
             }
             else
             {
-                infix[l_infix][l_token] = expression[i_expression];
-                infix[l_infix][l_token + 1] = '\0';
-                l_infix++;
-                l_token = 0;
+                infix[i_infix][i_token] = expression[i_expression];
+                infix[i_infix][i_token + 1] = '\0';
+                i_infix++;
+                i_token = 0;
             }
         }
     }
-    for(int k = 0; k < l_infix; k++) {printf("%s\n", infix[k]);}
+    for(int k = 0; k < i_infix; k++) {printf("%s\n", infix[k]);}
     
 }
 
