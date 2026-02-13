@@ -17,24 +17,23 @@ int main()
 {
     
     double num_stack[50];
-    int i_num_stack = 0;
+    int i_num_stack = -1;
     //----
     int l_postfix = 3;
     //----
-    for (int o = 0; o < l_postfix; o++)
+    for (int i_postfix = 0; i_postfix < l_postfix; i_postfix++)
     {
-        if (isdigit(*postfix[o]))
+        if (isdigit(*postfix[i_postfix]))
         {
-            num_stack[i_num_stack] = tonum(postfix[o]);
             i_num_stack++;
+            num_stack[i_num_stack] = tonum(postfix[i_postfix]);
         }
         else
         {
-            double a = num_stack[i_num_stack - 1];
+            double a = num_stack[i_num_stack];
             i_num_stack--;
-            double b = num_stack[i_num_stack - 1];
-            i_num_stack--;
-            switch (*postfix[o])
+            double b = num_stack[i_num_stack];
+            switch (*postfix[i_postfix])
             {
             case '*':
                 num_stack[i_num_stack] = b * a;
@@ -50,6 +49,7 @@ int main()
                 break;
             case '^':
                 num_stack[i_num_stack] = pow(b, a);
+                break;
             }
             i_num_stack++;
         }
