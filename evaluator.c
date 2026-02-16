@@ -2,8 +2,170 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-const char *expression = "(0 + 0)*0";
+const char *expression = "1+2+4-3";
 char infix[50][50];
+
+int isnum(char c);
+int isopepar(char c);
+int isoperator(char c);
+int isnumber(char c);
+int isprecedencelower(char a, char b);
+int isparenthesis(char c);
+double tonum(char *str);
+
+int main()
+{
+    // Tokenize expression
+    int i_infix = 0, i_token = 0;
+    int l_expression = strlen(expression);
+    for (int i_expression = 0; i_expression < l_expression; i_expression++)
+    {
+        if (expression[i_expression] == ' ')
+            continue;
+        if (!isnum(expression[i_expression]) && !isopepar(expression[i_expression]))
+        {
+            printf("Invalid expression!\n");
+            return 1;
+        }
+        if (!isdigit(expression[i_expression]))
+        {
+            infix[i_infix][i_token] = expression[i_expression];
+            infix[i_infix][i_token + 1] = '\0';
+            i_infix++;
+            i_token = 0;
+        }
+        else
+        {
+            if (isdigit(expression[i_expression - 1]))
+            {
+                i_infix--;
+                i_token++;
+                infix[i_infix][i_token] = expression[i_expression];
+                infix[i_infix][i_token + 1] = '\0';
+                i_infix++;
+                i_token = 0;
+            }
+            else
+            {
+                infix[i_infix][i_token] = expression[i_expression];
+                infix[i_infix][i_token + 1] = '\0';
+                i_infix++;
+                i_token = 0;
+            }
+        }
+    }
+    for(int k = 0; k < i_infix; k++) {printf("%s\n", infix[k]);}
+    printf("---------------------\n");
+
+    ////////////////////////
+
+    char postfix[50][50];
+    char stack[50][50];
+    int l_infix = i_infix + 1;
+    int i_postfix = -1;
+    int i_stack = -1;
+    for (i_infix = 0; i_infix < l_infix; i_infix++)
+    {
+        if (isnumber(*infix[i_infix]))
+        {
+            i_postfix++;
+            strcpy(postfix[i_postfix], infix[i_infix]);
+        }
+        else if (isparenthesis(*infix[i_infix]))
+        {
+            if (*infix[i_infix] == '(')
+            {
+                i_stack++;
+                strcpy(stack[i_stack], "(");
+            }
+            else
+            {
+                while (i_stack > -1 && *stack[i_stack] != '(')
+                {
+                    i_postfix++;
+                    strcpy(postfix[i_postfix], stack[i_stack]);
+                    i_stack--;
+                }
+                i_stack--;
+            }
+        }
+        else if (isoperator(*infix[i_infix]))
+        {
+            if (isparenthesis(*stack[i_stack]))
+            {
+                i_stack++;
+                strcpy(stack[i_stack], infix[i_infix]);
+            }
+            else if (i_stack > -1 && isprecedencelower(*infix[i_infix], *stack[i_stack]))
+            {
+                i_postfix++;
+                strcpy(postfix[i_postfix], stack[i_stack]);
+                i_stack--;
+            }
+            else
+            {
+                i_stack++;
+                strcpy(stack[i_stack], infix[i_infix]);
+            }
+        }
+    }
+    while (i_stack > -1)
+    {
+        i_postfix++;
+        strcpy(postfix[i_postfix], stack[i_stack]);
+        i_stack--;
+    }
+    for (int k = 0; k <= i_postfix; k++)
+    {
+        printf("%s\n", postfix[k]);
+    }
+    printf("---------------------\n");
+
+
+    /////////////////////
+
+    double num_stack[50];
+    int i_num_stack = -1;
+    //----
+    int l_postfix = i_postfix + 1;
+    //----
+    for (int i_postfix = 0; i_postfix < l_postfix; i_postfix++)
+    {
+        if (isdigit(*postfix[i_postfix]))
+        {
+            i_num_stack++;
+            num_stack[i_num_stack] = tonum(postfix[i_postfix]);
+        }
+        else
+        {
+            double a = num_stack[i_num_stack];
+            i_num_stack--;
+            double b = num_stack[i_num_stack];
+            switch (*postfix[i_postfix])
+            {
+            case '*':
+                num_stack[i_num_stack] = b * a;
+                break;
+            case '/':
+                num_stack[i_num_stack] = b / a;
+                break;
+            case '+':
+                num_stack[i_num_stack] = b + a;
+                break;
+            case '-':
+                num_stack[i_num_stack] = b - a;
+                break;
+            case '^':
+                num_stack[i_num_stack] = pow(b, a);
+                break;
+            }
+        }
+    }
+    printf("%lf\n", num_stack[0]);
+    printf("---------------------\n");
+
+    
+}
 
 int isnum(char c)
 {
@@ -20,6 +182,40 @@ int isopepar(char c)
 int isoperator(char c)
 {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+int isnumber(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+int isprecedencelower(char a, char b)
+{
+    switch (a)
+    {
+    case '^':
+        return 0;
+        break;
+    case '*':
+    case '/':
+        if (b == '^')
+            return 1;
+        else
+            return 0;
+        break;
+    case '+':
+    case '-':
+        if (b == '+' || b == '-')
+            return 0;
+        else
+            return 1;
+        break;
+    }
+}
+
+int isparenthesis(char c)
+{
+    return c == '(' || c == ')';
 }
 
 double tonum(char *str)
@@ -47,167 +243,4 @@ double tonum(char *str)
         num += (str[k] - '0') * pow(10, j - k);
     }
     return num * sign;
-}
-
-int main()
-{
-    // Tokenize expression
-    int i = 0, j = 0;
-    int len = strlen(expression);
-    for (int k = 0; k < len; k++)
-    {
-        if (expression[k] == ' ')
-            continue;
-        if (!isnum(expression[k]) && !isopepar(expression[k]))
-        {
-            printf("Invalid expression!\n");
-            return 1;
-        }
-        if (!isdigit(expression[k]))
-        {
-            infix[i][j] = expression[k];
-            infix[i][j + 1] = '\0';
-            i++;
-            j = 0;
-        }
-        else
-        {
-            if (isdigit(expression[k - 1]))
-            {
-                i--;
-                j++;
-                infix[i][j] = expression[k];
-                infix[i][j + 1] = '\0';
-                i++;
-                j = 0;
-            }
-            else
-            {
-                infix[i][j] = expression[k];
-                infix[i][j + 1] = '\0';
-                i++;
-                j = 0;
-            }
-        }
-    }
-
-    // for(int k = 0; k < i; k++){
-    //     puts(infix[k]);
-    // }
-    /////////////////////////////////
-
-    // infix to postfix conversion
-
-    char postfix[50][50];
-    char stack[50][50];
-    int l = 0;
-    int m = 0;
-    for (int k = 0; k < 7; k++)
-    {
-        if (isdigit(*infix[k]))
-        {
-            strcpy(postfix[l], infix[k]);
-            l++;
-        }
-        else
-        {
-            switch (*infix[k])
-            {
-            case '(':
-                strcpy(stack[m], infix[k]);
-                m++;
-                break;
-            case ')':
-                while (*stack[m - 1] != '(')
-                {
-                    strcpy(postfix[l], stack[m - 1]);
-                    l++;
-                    m--;
-                }
-                if (*stack[m - 1] == '(')
-                {
-                    m--;
-                }
-                break;
-            case '^':
-            	strcpy(stack[m], infix[k]);
-            	m++;
-            	break;
-            case '*':
-            case '/':
-                if(*stack[m - 1] == '+' || *stack[m - 1] == '-'){
-                    strcpy(stack[m], infix[k]);
-                }
-                else if(*stack[m - 1] == '^' || *stack[m - 1] == '*' || *stack[m - 1] == '/'){
-                    strcpy(postfix[l], stack[m - 1]);
-                    l++;
-                    m--;
-                    strcpy(stack[m], infix[k]);
-                    m++;
-                }
-                else if(m == 0){
-                    strcpy(stack[m], infix[k]);
-                    m++;
-                }
-                break;
-            case '+':
-            case '-':
-                if(isoperator(*stack[m - 1])){
-                    strcpy(postfix[l], stack[m - 1]);
-                    l++; m--;
-                    strcpy(stack[m], infix[k]);
-                    m++;
-                }
-                else if(m == 0){
-                    strcpy(stack[m], infix[k]);
-                    m++;
-                }
-            }
-        }
-    }
-    while (m > -1)
-    {
-        strcpy(postfix[l], stack[m]);
-        l++;
-        m--;
-    }
-
-    // Postfix evaluation
-
-    double num_stack[50];
-    int n = 0;
-    for (int o = 0; o < l; o++)
-    {
-        if (isdigit(*postfix[o]))
-        {
-            num_stack[n] = tonum(postfix[o]);
-            n++;
-        }
-        else
-        {
-            double a = num_stack[n - 1];
-            n--;
-            double b = num_stack[n - 1];
-            n--;
-            switch (*postfix[o])
-            {
-            case '*':
-                num_stack[n] = b * a;
-                break;
-            case '/':
-                num_stack[n] = b / a;
-                break;
-            case '+':
-                num_stack[n] = b + a;
-                break;
-            case '-':
-                num_stack[n] = b - a;
-                break;
-            case '^':
-                num_stack[n] = pow(b, a);
-            }
-            n++;
-        }
-    }
-    printf("%lf\n", num_stack[0]);
 }
