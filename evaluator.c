@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-const char *expression = "1+2+4-3";
+const char *expression = "(((100+298)*5)/300)^2";
 char infix[50][50];
 
 int isnum(char c);
@@ -29,10 +29,10 @@ int main()
         }
         if (!isdigit(expression[i_expression]))
         {
+            i_token = 0;
             infix[i_infix][i_token] = expression[i_expression];
             infix[i_infix][i_token + 1] = '\0';
             i_infix++;
-            i_token = 0;
         }
         else
         {
@@ -43,14 +43,12 @@ int main()
                 infix[i_infix][i_token] = expression[i_expression];
                 infix[i_infix][i_token + 1] = '\0';
                 i_infix++;
-                i_token = 0;
             }
             else
             {
                 infix[i_infix][i_token] = expression[i_expression];
                 infix[i_infix][i_token + 1] = '\0';
                 i_infix++;
-                i_token = 0;
             }
         }
     }
