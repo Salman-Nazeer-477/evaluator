@@ -2,7 +2,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-const char *expression = "(((100+298)*5)/300)^2";
 char infix[50][50];
 
 int isnum(char c);
@@ -13,8 +12,10 @@ int isprecedencelower(char a, char b);
 int isparenthesis(char c);
 double tonum(char *str);
 
-int main()
+int main(int argc, char *argv[])
 {
+    const char *expression = argv[1];
+
     // Tokenize expression
     int i_infix = 0, i_token = 0;
     int l_expression = strlen(expression);
@@ -52,8 +53,11 @@ int main()
             }
         }
     }
-    for(int k = 0; k < i_infix; k++) {printf("%s\n", infix[k]);}
-    printf("---------------------\n");
+    // for (int k = 0; k < i_infix; k++)
+    // {
+    //     printf("%s\n", infix[k]);
+    // }
+    // printf("---------------------\n");
 
     ////////////////////////
 
@@ -113,12 +117,11 @@ int main()
         strcpy(postfix[i_postfix], stack[i_stack]);
         i_stack--;
     }
-    for (int k = 0; k <= i_postfix; k++)
-    {
-        printf("%s\n", postfix[k]);
-    }
-    printf("---------------------\n");
-
+    // for (int k = 0; k <= i_postfix; k++)
+    // {
+    //     printf("%s\n", postfix[k]);
+    // }
+    // printf("---------------------\n");
 
     /////////////////////
 
@@ -160,9 +163,8 @@ int main()
         }
     }
     printf("%lf\n", num_stack[0]);
-    printf("---------------------\n");
-
-    
+    //printf("---------------------\n");
+    return 0;
 }
 
 int isnum(char c)
