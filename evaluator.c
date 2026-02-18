@@ -11,19 +11,105 @@ int isnumber(char c);
 int isprecedencelower(char a, char b);
 int isparenthesis(char c);
 double tonum(char *str);
+double evaluate(char *str);
+
 
 int main(int argc, char *argv[])
 {
-    if(argc < 2){
+    if (argc < 2)
+    {
         printf("Error! Too few arguments!\n");
         return 1;
     }
-    if(argc > 2){
+    if (argc > 2)
+    {
         printf("Error! Too many arguments!\n");
         return 1;
     }
-    const char *expression = argv[1];
+    const double value = evaluate(argv[1]);
+    printf("%.lf\n", value);
+}
 
+int isnum(char c)
+{
+    if (isalnum(c) && !isalpha(c))
+        return 1;
+    return 0;
+}
+
+int isopepar(char c)
+{
+    return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+int isoperator(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+int isnumber(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+int isprecedencelower(char a, char b)
+{
+    switch (a)
+    {
+    case '^':
+        return 0;
+        break;
+    case '*':
+    case '/':
+        if (b == '^')
+            return 1;
+        else
+            return 0;
+        break;
+    case '+':
+    case '-':
+        if (b == '+' || b == '-')
+            return 0;
+        else
+            return 1;
+        break;
+    }
+}
+
+int isparenthesis(char c)
+{
+    return c == '(' || c == ')';
+}
+
+double tonum(char *str)
+{
+    int sign = 1;
+    int i = 0;
+    double num = 0.0;
+    if (str[0] == '-')
+    {
+        sign = -1;
+        i = 1;
+    }
+    int j = 0;
+    for (; j < strlen(str); j++)
+    {
+        if (str[j] == '.')
+            break;
+    }
+    for (int k = j - 1; k >= i; k--)
+    {
+        num += (str[k] - '0') * pow(10, j - k - 1);
+    }
+    for (int k = j + 1; k < strlen(str); k++)
+    {
+        num += (str[k] - '0') * pow(10, j - k);
+    }
+    return num * sign;
+}
+
+double evaluate(char *expression)
+{
     // Tokenize expression
     int i_infix = 0, i_token = 0;
     int l_expression = strlen(expression);
@@ -170,85 +256,6 @@ int main(int argc, char *argv[])
             }
         }
     }
-    printf("%lf\n", num_stack[0]);
-    //printf("---------------------\n");
-    return 0;
-}
-
-int isnum(char c)
-{
-    if (isalnum(c) && !isalpha(c))
-        return 1;
-    return 0;
-}
-
-int isopepar(char c)
-{
-    return c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
-}
-
-int isoperator(char c)
-{
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
-}
-
-int isnumber(char c)
-{
-    return c >= '0' && c <= '9';
-}
-
-int isprecedencelower(char a, char b)
-{
-    switch (a)
-    {
-    case '^':
-        return 0;
-        break;
-    case '*':
-    case '/':
-        if (b == '^')
-            return 1;
-        else
-            return 0;
-        break;
-    case '+':
-    case '-':
-        if (b == '+' || b == '-')
-            return 0;
-        else
-            return 1;
-        break;
-    }
-}
-
-int isparenthesis(char c)
-{
-    return c == '(' || c == ')';
-}
-
-double tonum(char *str)
-{
-    int sign = 1;
-    int i = 0;
-    double num = 0.0;
-    if (str[0] == '-')
-    {
-        sign = -1;
-        i = 1;
-    }
-    int j = 0;
-    for (; j < strlen(str); j++)
-    {
-        if (str[j] == '.')
-            break;
-    }
-    for (int k = j - 1; k >= i; k--)
-    {
-        num += (str[k] - '0') * pow(10, j - k - 1);
-    }
-    for (int k = j + 1; k < strlen(str); k++)
-    {
-        num += (str[k] - '0') * pow(10, j - k);
-    }
-    return num * sign;
+    return num_stack[0];
+    // printf("---------------------\n");
 }
