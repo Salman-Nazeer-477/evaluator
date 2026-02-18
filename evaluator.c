@@ -13,15 +13,17 @@ int isparenthesis(char c);
 double tonum(char *str);
 double evaluate(char *str);
 
-
 int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        printf("Error! Too few arguments!\n");
-        return 1;
+        while (1)
+        {
+            const double value = evaluate(argv[1]);
+            printf("%.lf\n", value);
+        }
     }
-    if (argc > 2)
+    else if (argc > 2)
     {
         printf("Error! Too many arguments!\n");
         return 1;
