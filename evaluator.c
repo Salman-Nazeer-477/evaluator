@@ -14,6 +14,14 @@ double tonum(char *str);
 
 int main(int argc, char *argv[])
 {
+    if(argc < 2){
+        printf("Error! Too few arguments!\n");
+        return 1;
+    }
+    if(argc > 2){
+        printf("Error! Too many arguments!\n");
+        return 1;
+    }
     const char *expression = argv[1];
 
     // Tokenize expression
@@ -25,7 +33,7 @@ int main(int argc, char *argv[])
             continue;
         if (!isnum(expression[i_expression]) && !isopepar(expression[i_expression]))
         {
-            printf("Invalid expression!\n");
+            printf("Error! Invalid expression!\n");
             return 1;
         }
         if (!isdigit(expression[i_expression]))
