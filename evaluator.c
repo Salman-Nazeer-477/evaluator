@@ -15,11 +15,14 @@ double evaluate(char *str);
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2)
+    if (argc == 1)
     {
+        char expression[100];
         while (1)
         {
-            const double value = evaluate(argv[1]);
+            printf(">>");
+            scanf("%s", &expression);
+            const double value = evaluate(expression);
             printf("%.lf\n", value);
         }
     }
