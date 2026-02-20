@@ -17,11 +17,12 @@ int main(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        char expression[100];
+        char expression[100] = " ";
         while (1)
         {
             printf(">>");
-            scanf("%s", &expression);
+            scanf("%s", expression);
+            if(!strcmp("quit", expression)) return 0;
             const double value = evaluate(expression);
             printf("%.lf\n", value);
         }
